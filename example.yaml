@@ -1,0 +1,42 @@
+disable_existing_loggers: true
+version: 1
+formatters:
+  default:
+    format: "%(asctime)s [%(process)d] \t%(message)s"
+handlers:
+  stream:
+    class: logging.StreamHandler
+    level: ERROR
+    formatter: default
+    stream: ext://sys.stderr
+  syslog:
+    class: project.log.SysLogFileHandler
+    filename: /var/log/project_syslog
+    level: INFO
+    formatter: default
+  log:
+    class: project.log.SysLogFileHandler
+    filename: /var/log/project_syslog
+    level: INFO
+    formatter: [invalid_value_type, 1, 2, 3]
+  sentry:
+    class: project.log.SentryHandler
+    level: ERROR
+    dsn: "udp://blablabla@sentry.server.local:2525/7"
+loggers:
+  console:
+    handlers: [stream]
+    level: DEBUG
+    propagate: false
+    invalid_key: bla-bla-bla
+  log:
+    handlers: [log]
+    level: DEBUG
+    propagate: false
+  "":
+    handlers: [syslog, sentry]
+    level: DEBUG
+    propagate: false
+  project:
+    level: DEBUG
+    propagate: true
